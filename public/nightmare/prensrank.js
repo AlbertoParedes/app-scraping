@@ -16,15 +16,13 @@ module.exports = {
       typeInterval: 0,
       executionTimeout: 2 * 60 * 1000,
       waitTimeout: 2 * 60 * 1000,
-      //executionTimeout: 6000,
-      //waitTimeout: 10000,
       show: data.browser,
       height: 800,
       width: 1200,
+      
+      //electronPath: require('../../../electron')//DEPLOY WINDOWS, si creamos la aplicacion con electron-builder esto no hace falta
+      electronPath: require(`${path.join(__dirname, '../../../app.asar.unpacked/node_modules/nightmare/node_modules/electron')}`)//DEPLOY MAC AND WINDOWS
       //electronPath: require('../../node_modules/nightmare/node_modules/electron')//DEV
-      //electronPath: require('../../../electron')//DEPLOY WINDOWS
-      //electronPath: require(`${path.join(__dirname, '../../node_modules/nightmare/node_modules/electron')}`)
-      electronPath: require(`${path.join(__dirname, '../../../app.asar.unpacked/node_modules/nightmare/node_modules/electron')}`)//DEPLOY MAC
     });
 
     nightmare
