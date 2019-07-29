@@ -1,0 +1,82 @@
+{
+  "name": "YoSEO",
+  "productName": "YoSEO",
+  "version": "0.1.0",
+  "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
+  "dependencies": {
+    "dot-prop-immutable": "^1.5.0",
+    "electron-is-dev": "^1.0.1",
+    "electron-packager": "^14.0.2",
+    "firebase": "^5.5.8",
+    "fs": "0.0.1-security",
+    "history": "^4.7.2",
+    "html-to-json": "^0.6.0",
+    "jquery": "^3.4.1",
+    "js2excel": "^1.0.1",
+    "mammoth": "^1.4.8",
+    "moment": "^2.24.0",
+    "moment-with-locales-es6": "^1.0.1",
+    "nightmare": "^3.0.2",
+    "nodemailer": "^4.7.0",
+    "path": "^0.12.7",
+    "python-shell": "^1.0.7",
+    "react": "^16.6.1",
+    "react-contenteditable": "^3.2.2",
+    "react-countdown-clock": "^2.6.0",
+    "react-dom": "^16.6.1",
+    "react-helmet": "^5.2.1",
+    "react-html-parser": "^2.0.2",
+    "react-redux": "^5.1.1",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "^3.0.1",
+    "react-svg": "^10.0.9",
+    "redux": "^4.0.1",
+    "sendmail": "^1.4.1",
+    "styled-components": "^4.3.2",
+    "xlsx": "^0.14.3",
+    "xml-formatter": "^1.1.0",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "concurrently": "^4.0.1",
+    "electron": "^3.0.8",
+    "electron-builder": "^21.1.5",
+    "wait-on": "^3.2.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "electron-start": "electron .",
+    "dev": "concurrently \"set BROWSER=none&&yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-pack": "build — em.main=build/electron.js",
+    "preelectron-pack": "yarn build",
+    "package-win": "electron-packager . Yoseo --overwrite --asar=true --platform=win32 --arch=ia32 --extra-resource=python --extra-resource=node_modules/nightmare/node_modules/electron --icon=public/assets/icons/win/icon.ico --prune=true --out=dist --version-string.CompanyName=CE --version-string.FileDescription=CE"
+  },
+  "build": {
+    "appId": "com.yoseo-scripts",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "extraFiles": [
+      "python"
+    ],
+    "directories": {
+      "buildResources": "public"
+    }
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
