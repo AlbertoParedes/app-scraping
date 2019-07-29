@@ -21,10 +21,10 @@ module.exports = {
       show: data.browser,
       height: 800,
       width: 1200,
-      //electronPath: require('../../node_modules/nightmare/node_modules/electron')
-      electronPath: require('../../../electron')//DEPLOY WINDOWS
+      //electronPath: require('../../node_modules/nightmare/node_modules/electron')//DEV
+      //electronPath: require('../../../electron')//DEPLOY WINDOWS
       //electronPath: require(`${path.join(__dirname, '../../node_modules/nightmare/node_modules/electron')}`)
-      //electronPath: require(`${path.join(__dirname, '../../../app.asar.unpacked/node_modules/nightmare/node_modules/electron')}`)
+      electronPath: require(`${path.join(__dirname, '../../../app.asar.unpacked/node_modules/nightmare/node_modules/electron')}`)//DEPLOY MAC
     });
 
     nightmare

@@ -62,13 +62,17 @@ class Card extends Component{
   }
 
   handleDowload = () => {
+    console.log(this.props.item.keywords);
     var data = [];
     Object.entries(this.props.item.keywords).forEach(([i,o])=>{
       var row = {};
       row['KEYWORD']= o.keyword;
-      o.results.forEach((o2,i2)=>{
-        row['K'+(i2+1)]=o2
-      })
+      if(o.results){
+        o.results.forEach((o2,i2)=>{
+          row['K'+(i2+1)]=o2
+        })
+      }
+      
       data.push(row)
     })
     

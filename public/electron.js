@@ -20,8 +20,8 @@ function createWindow() {
     height: 800,
     frame: false,
     transparent: false,
-    title:"Yoseo"
-    //titleBarStyle: "customButtonsOnHover",
+    title:"Yoseo",
+    titleBarStyle: "customButtonsOnHover",
   });
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
   mainWindow.on('closed', () => mainWindow = null);
