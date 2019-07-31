@@ -53,9 +53,10 @@ module.exports = {
           for (i = 0; i < keywords.length; ) {
 
             await new Promise( resolve => {
-              var keyword = keywords[i]
 
-              var kwdDecode = encodeURI(keyword.keyword)
+              var keyword = keywords[i]
+              console.log(i+1,'portl scaffolding');
+              var kwdDecode = encodeURI('portl scaffolding')
 
               nightmare
               //eliminamos la keyword a buscar anterior
@@ -66,13 +67,19 @@ module.exports = {
               .insert('[name=q]','')
               //.wait(1 * 1000)
               .updateStatus({id:2, text:'Kewyword: <b>'+keyword.keyword+'</b>', status:'running'})
-              .insert('[name="q"]', keyword.keyword)
+              .insert('[name="q"]', 'portl scaffolding')
               //.insert('[name="q"]', 'confeccion industrial')
               //.wait(1 * 1000)
               .type('[name="q"]', '\u000d')
 
+            
+
               //.wait(`div#res[role="main"] > #search div[data-async-context="query:${kwdDecode}"]`)
               .wait(`div#res[role="main"] > #search div[data-async-context="query:${kwdDecode}"]`)
+
+              .catch(error =>{
+                console.log(error);
+              })
 
               .evaluate( keyword => {
 
@@ -172,7 +179,6 @@ module.exports = {
 
                 var altura = response.height < 8100 ? response.height : 8100;
                 altura = Math.ceil(altura)
-                console.log(altura);
 
                 nightmare
                 .viewport(650,altura)
@@ -182,12 +188,11 @@ module.exports = {
                   console.log();
                   keyword.buf = buf;
 
-
                   nightmare
                   .uploadResultado(keyword)
                   .then(()=>{
                     i++;// ya podemos hacer la siguiente keyword
-                    resolve();
+                    //-resolve();
                   })
                   .catch(err=>{ console.log('Error 1 ->', err) })
 
@@ -226,7 +231,6 @@ module.exports = {
                               internetAvailable()
                               .then(()=>{
                                 console.log("Internet available");
-                                console.log("Internet available");
                                   nightmare = new Nightmare(options);
                                   nightmare
                                   .useragent('Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36')
@@ -239,23 +243,23 @@ module.exports = {
                                   })
                                   .catch(()=>{
                                       console.log("error 4402");
-                                      resolve()
+                                      //-resolve()
                                   });
 
                                   online=true;
-                                  resolve()
+                                  //-resolve()
 
                               })
                               .catch(()=>{
                                   console.log("No internet");
-                                  resolve()
+                                  //-resolve()
                               });
 
                             }, 3 * 1000)
                           });
                         }
 
-                        resolve()
+                        //-resolve()
                         console.log('Traza 100');
 
 
@@ -288,7 +292,7 @@ module.exports = {
           console.log('====================================');
           console.log('termina el for');
           console.log('====================================');
-          resolve()
+          //-resolve()
 
         }
         run();

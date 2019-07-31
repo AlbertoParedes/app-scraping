@@ -3,14 +3,15 @@ import { ReactComponent as Play } from '../../../Global/Images/play.svg';
 import { ReactComponent as Loop } from '../../../Global/Images/loop.svg';
 import { ReactComponent as Cross } from '../../../Global/Images/cross.svg';
 import { ReactComponent as Check } from '../../../Global/Images/check.svg';
-import ReactHtmlParser from 'react-html-parser'; 
+import ReactHtmlParser from 'react-html-parser';
 import firebase from '../../../../firebase/Firebase';
 import Switch from '../../../Global/Switch'
+import functions from '../../../../functions'
 const db = firebase.database().ref();
 const { ipcRenderer } = window.require('electron');
 
 class GoogleTracker extends Component{
-  
+
   constructor(props){
     super(props)
     this.state={
@@ -19,7 +20,7 @@ class GoogleTracker extends Component{
       recentDocuments:{} ,
       getData:false,
       styleImage:{background:`linear-gradient(95.65deg, rgb(22, 26, 57) 13.2%, rgba(22, 26, 57, 0.9) 55.88%, rgba(39, 39, 72, 0.35) 97.88%) center center / cover, url(${this.props.app.image}) no-repeat`,backgroundPosition: "center center",transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0s',position: 'absolute',width: '100%',height: '100%',top: '0px',left: '0px'},
-      statusScript:'run',//el status puede ser: run, running, cancel 
+      statusScript:'run',//el status puede ser: run, running, cancel
       browser: true,
       estados:{},
       showTerminal:false,
@@ -43,7 +44,7 @@ class GoogleTracker extends Component{
 
   subirResultado = (event, data) => {
     console.log(data);
-    
+
   }
 
   componentWillReceiveProps = newProps => {
@@ -60,7 +61,8 @@ class GoogleTracker extends Component{
 
   getData = () => {
 
-    db.child('Clientes').orderByKey().limitToFirst(1).once("value", snapshot =>{
+    db.child('Clientes').orderByKey().limitToFirst(1).on("value", snapshot =>{
+    //db.child('Clientes').orderByKey().once("value", snapshot =>{
       var clientes = {};
       snapshot.forEach( data => {
         var {eliminado,activo, web, id_cliente, servicios} = data.val();
@@ -86,23 +88,25 @@ class GoogleTracker extends Component{
       if(c.tracking.keywords){
         Object.entries(c.tracking.keywords).forEach(([j,k])=>{
 
-          if(k.activo && !k.eliminado && k.done){
+          if(k.activo && !k.eliminado /* && k.done */){
+            var dominio = functions.getDominio(c.web)
             keywords.push({
               keyword:k.keyword,
               web: c.web,
               id_cliente:c.id_cliente,
               id_keyword:k.id_keyword,
-              dominios: {"dominio0":"academiasisa.com/", "dominio1":"academia.com/"},
+              dominios: {"dominio0":dominio, "dominio1":"academia.com/"},
               competidores:{"competidor1": "corteyconfeccioncarmen.es", "competidor2":"educaweb.com"}
             })
           }
-  
+
         })
       }
-      
+
     })
+    console.log(keywords.length);
     this.setState({keywords})
-    
+
 
   }
 
@@ -112,7 +116,7 @@ class GoogleTracker extends Component{
     var data = {
       browser:this.state.browser,
       keywords:this.state.keywords
-    } 
+    }
 
 
     if(statusScript==='run'){
@@ -134,7 +138,7 @@ class GoogleTracker extends Component{
     }
   }
 
-  
+
   render(){
     var numDocuments = 0;
     if(!this.state.visibility)return false
@@ -186,7 +190,7 @@ class GoogleTracker extends Component{
                   <Cross className='cancel-prensarank' />
                   <div className='text-btn-prensarank text-cancel-prensarank'>Cancelar script</div>
                 </div>:null
-              } 
+              }
 
             </div>
           </div>
@@ -198,7 +202,7 @@ class GoogleTracker extends Component{
           </div>
 
         </div>
-        
+
 
       </div>
     )
