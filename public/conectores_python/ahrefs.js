@@ -7,8 +7,8 @@ module.exports = {
 
     var options = {
 
-      scriptPath: path.join(__dirname,'../../../../python'),//DEPLOY MAC Y WINDOWS
-      //scriptPath: path.join(__dirname,'../../python'),//DEV
+      //scriptPath: path.join(__dirname,'../../../../python'),//DEPLOY MAC Y WINDOWS
+      scriptPath: path.join(__dirname,'../../python'),//DEV
       //pythonPath: '/usr/local/bin/python3',//AGREGAR ESTA LINEA SOLO SI ES MAC
       //scriptPath: path.join(__dirname,'../../../python'),//DEPLOY WINDOWS,
       
