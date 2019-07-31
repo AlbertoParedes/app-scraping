@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import AhrefsKeywordPanel from "./Categorias/PanelAhrefsKeywords/AhrefsKeywords";
 import Word2Html from "./Categorias/PanelWord2Html/Word2Html";
 import Presarank from "./Categorias/PanelPresarank/Presarank";
+import GoogleTracker from "./Categorias/PanelGoogleTracker/GoogleTracker";
 
 class ContainerApp extends Component {
   constructor(props) {
@@ -33,6 +34,11 @@ class ContainerApp extends Component {
         <Presarank 
           visibility={this.props.panelSeleccionado.categoria === 2 && this.props.panelSeleccionado.idPanel==='prensarank'?true:false} 
           app={this.props.apps['prensarank']} 
+        />
+
+        <GoogleTracker 
+          visibility={this.props.panelSeleccionado.categoria === 2 && this.props.panelSeleccionado.idPanel==='tracking_keywords'?true:false} 
+          app={this.props.apps['tracking_keywords']} 
         />
 
       </div>

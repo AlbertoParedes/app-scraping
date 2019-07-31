@@ -40,7 +40,7 @@ class Card extends Component{
     }
     this.props.setScrapingOpera(this.props.item)
     
-    ipcRenderer.send('START_SCRAPING_KEYWORDS_AHREFS', JSON.stringify(obj));
+    ipcRenderer.send('START_SCRAPING_KEYWORDS_AHREFS', obj);
   }
 
   confirmResult = (result) => {

@@ -20,7 +20,7 @@ var global = {
 
   apps:{
 
-    /*
+    
     tracking_keywords: {
       id: 'tracking_keywords',
       categoria: 2,
@@ -28,13 +28,13 @@ var global = {
       menuButton: false,
       titlePanel: 'Keywords explorer Ahrefs',
       image: require('../../../components/Global/Images/bg-1-2.gif'),
-      desciption:'Script que se encaga de trackear las posiciones de todas las keywords guardando ademas una captura ',
+      desciption:'Script que se encaga de trackear las posiciones de todas las keywords guardando ademas una captura como prueba.',
       miniCard:{
         title:'Trackea keywords de clientes',
         bottomTitle:'GOOGLE'
       },      
     },
-    */
+    
 
    prensarank: {
       id: 'prensarank',

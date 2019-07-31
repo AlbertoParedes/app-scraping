@@ -14,6 +14,7 @@
     "fs": "0.0.1-security",
     "history": "^4.7.2",
     "html-to-json": "^0.6.0",
+    "internet-available": "^1.0.0",
     "jquery": "^3.4.1",
     "js2excel": "^1.0.1",
     "mammoth": "^1.4.8",
@@ -69,11 +70,11 @@
       "python"
     ],
     "win": {
-      "target":"nsis",
+      "target": "nsis",
       "icon": "./public/assets/icons/win/icon.ico"
     },
-    "nsis":{
-      "oneClick":true
+    "nsis": {
+      "oneClick": true
     },
     "mac": {
       "target": "dmg",

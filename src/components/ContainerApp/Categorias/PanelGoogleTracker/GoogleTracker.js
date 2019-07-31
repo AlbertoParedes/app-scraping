@@ -5,63 +5,44 @@ import { ReactComponent as Cross } from '../../../Global/Images/cross.svg';
 import { ReactComponent as Check } from '../../../Global/Images/check.svg';
 import ReactHtmlParser from 'react-html-parser'; 
 import firebase from '../../../../firebase/Firebase';
-import moment from 'moment'
-import Card from './Card'
 import Switch from '../../../Global/Switch'
-
 const db = firebase.database().ref();
 const { ipcRenderer } = window.require('electron');
 
-class Presarank extends Component{
-
-  constructor(props) {
-    super(props);
-    this.state = {
+class GoogleTracker extends Component{
+  
+  constructor(props){
+    super(props)
+    this.state={
       visibility:this.props.visibility,
       documents: {},
       recentDocuments:{} ,
       getData:false,
       styleImage:{background:`linear-gradient(95.65deg, rgb(22, 26, 57) 13.2%, rgba(22, 26, 57, 0.9) 55.88%, rgba(39, 39, 72, 0.35) 97.88%) center center / cover, url(${this.props.app.image}) no-repeat`,backgroundPosition: "center center",transition: 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0s',position: 'absolute',width: '100%',height: '100%',top: '0px',left: '0px'},
       statusScript:'run',//el status puede ser: run, running, cancel 
-      browser: false,
+      browser: true,
       estados:{},
       showTerminal:false,
-    };
+      clientes:{}
+    }
   }
 
   componentWillMount = () => {
-    ipcRenderer.removeListener('RESPONSE_PRENSARANK',this.updateMessageScraping);
-    ipcRenderer.removeListener('SUBIR_MEDIOS_PRENSARANK',this.subirMedios);
+    ipcRenderer.removeListener('RESPONSE_GOOGLE_TRACKER',this.updateMessageScraping);
+    ipcRenderer.removeListener('SUBIR_GOOGLE_TRACKER',this.subirResultado);
   }
   componentDidMount = () => {
-    ipcRenderer.on('RESPONSE_PRENSARANK',this.updateMessageScraping);
-    ipcRenderer.on('SUBIR_MEDIOS_PRENSARANK',this.subirMedios);
+    ipcRenderer.on('RESPONSE_GOOGLE_TRACKER',this.updateMessageScraping);
+    ipcRenderer.on('SUBIR_GOOGLE_TRACKER',this.subirResultado);
   }
-
   updateMessageScraping = (event, data) => {
     var estados = this.state.estados;
     estados[data.id]=data;
     this.setState({estados})
   }
 
-  subirMedios = (event, data) => {
-    var id_document = db.child(`Others/apps/scraping/prensarank-medios/documents`).push().key;
-    var document = {
-      id_document,
-      medios: data.medios,
-      timestamp: (+ new Date())
-    }
-    var multiPath = {}
-    multiPath[`Others/apps/scraping/prensarank-medios/documents/${id_document}`]=document
-    db.update(multiPath)
-    .then(()=>{
-      this.setState({showTerminal:false, statusScript:'run'})
-    })
-    .catch((err)=>{
-      console.log(err);
-      this.setState({showTerminal:false, statusScript:'run'})
-    })
-    console.log(document);
+  subirResultado = (event, data) => {
+    console.log(data);
     
   }
 
@@ -78,74 +59,71 @@ class Presarank extends Component{
   }
 
   getData = () => {
-    console.log('getting data...');
-    db.child('Others/apps/scraping/prensarank-medios/documents').orderByKey().on("value", snapshot => {
-      var documents = {},recentDocuments ={}
-      snapshot.forEach(data => {
-        
-        var fecha = moment(data.val().timestamp)
-        var hoy = moment()
-        var dif = hoy.diff(fecha,'days')+1
-        if(dif>3){
-          documents[data.key] = data.val();
-        }else{
-          recentDocuments[data.key] = data.val();
-        }
-      })
 
-      var recentDocumentsOrdenados = Object.entries(recentDocuments)
-      recentDocumentsOrdenados.sort((a, b) => {
-        a = a[1]; b = b[1]
-        if (a.timestamp > b.timestamp) { return 1; }
-        if (a.timestamp < b.timestamp) { return -1; }
-        return 0;
-      });
-      recentDocumentsOrdenados.reverse();
+    db.child('Clientes').orderByKey().limitToFirst(1).once("value", snapshot =>{
+      var clientes = {};
+      snapshot.forEach( data => {
+        var {eliminado,activo, web, id_cliente, servicios} = data.val();
+        try {
+          if(!eliminado && activo && servicios.tracking.activo){
+            clientes[data.key]={web,eliminado,id_cliente, activo, tracking:servicios.tracking}
+          }
+        } catch (error) {}
 
-      var documentsOrdenados = Object.entries(documents)
-      documentsOrdenados.sort((a, b) => {
-        a = a[1]; b = b[1]
-        if (a.timestamp > b.timestamp) { return 1; }
-        if (a.timestamp < b.timestamp) { return -1; }
-        return 0;
       });
-      documentsOrdenados.reverse();
-      
-      
-      this.setState({ documents:documentsOrdenados, recentDocuments: recentDocumentsOrdenados })
+      this.setState({clientes},()=>this.collectKeywords())
     })
+
+  }
+
+  collectKeywords = () => {
+
+    var clientes = this.state.clientes;
+    var keywords = []
+
+    Object.entries(clientes).forEach(([i,c])=>{
+
+      if(c.tracking.keywords){
+        Object.entries(c.tracking.keywords).forEach(([j,k])=>{
+
+          if(k.activo && !k.eliminado && k.done){
+            keywords.push({
+              keyword:k.keyword,
+              web: c.web,
+              id_cliente:c.id_cliente,
+              id_keyword:k.id_keyword,
+              dominios: {"dominio0":"academiasisa.com/", "dominio1":"academia.com/"},
+              competidores:{"competidor1": "corteyconfeccioncarmen.es", "competidor2":"educaweb.com"}
+            })
+          }
+  
+        })
+      }
+      
+    })
+    this.setState({keywords})
+    
+
   }
 
   handleScript = () => {
-
     var statusScript = this.state.statusScript;
 
     var data = {
       browser:this.state.browser,
-      account:{
-        user:'guillermorodriguez@yoseomarketing.com',
-        password:'seolamers'
-      }
+      keywords:this.state.keywords
     } 
 
 
     if(statusScript==='run'){
       statusScript = 'running';
-      ipcRenderer.send('START_PRENSARANK',data);
+      ipcRenderer.send('START_GOOGLE_TRACKER',data);
       this.setState({statusScript, estados:{}, showTerminal:true})
     }else if(statusScript==='running'){
       statusScript='run'
-      ipcRenderer.send('STOP_PRENSARANK',data);
+      ipcRenderer.send('STOP_GOOGLE_TRACKER',data);
       this.setState({statusScript, showTerminal:false})
     }
-
-    
-
-
-    
-    
-    
-    
   }
 
   callbackSwitch = (json) => {
@@ -156,14 +134,12 @@ class Presarank extends Component{
     }
   }
 
+  
   render(){
-
-    var numDocuments = Object.keys(this.state.recentDocuments).length + Object.keys(this.state.documents).length
-    
+    var numDocuments = 0;
     if(!this.state.visibility)return false
-    return (
+    return(
       <div className='home-app' >
-
         {/*TERMINAL*/}
         <div className={` ${this.state.showTerminal?'show-terminal':'hidde-terminal'}`}>
           <div className={`container-terminal`}>
@@ -223,40 +199,10 @@ class Presarank extends Component{
 
         </div>
         
-        {this.state.recentDocuments.length>0?<h3 className='tiitle-grid'>Documentos Recientes</h3>:null}
-        {
-          this.state.recentDocuments.length>0?
-            <div className='CardGroup2'>
-              {
-                this.state.recentDocuments.map((item, id) => {
-                  return(
-                    <Card key={id} item={item[1]} />
-                  )
-                })
-              }
-            </div>:null
-        }
-
-        {this.state.documents.length>0?<h3 className='tiitle-grid'>Documentos</h3>:null}
-        {
-          this.state.documents.length>0?
-            <div className='CardGroup2'>
-              {
-                this.state.documents.map((item, id) => {
-                  return(
-                    <Card key={id} item={item[1]} />
-                  )
-                })
-              }
-            </div>:null
-        }
-
-        
-
 
       </div>
     )
   }
 }
 
-export default Presarank
+export default GoogleTracker

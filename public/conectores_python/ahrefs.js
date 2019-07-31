@@ -13,13 +13,14 @@ module.exports = {
       //scriptPath: path.join(__dirname,'../../../python'),//DEPLOY WINDOWS,
       
       pythonOptions: ['-u'],
-      args: [json],
+      args: [JSON.stringify(json)],
       mode:'json'
     }
 
     if(json.os==='MAC'){
       options.pythonPath='/usr/local/bin/python3'
     }
+    
     
     var shell = new PythonShell('ahrefs.py',options); //executes python script on python3
     shell.on('message', function (message) {
