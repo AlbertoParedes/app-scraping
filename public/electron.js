@@ -4,7 +4,7 @@ const isDev = require("electron-is-dev");
 const ahrefs = require('./conectores_python/ahrefs');
 const word2html = require('./conectores_python/word2html');
 const prensrank = require('./nightmare/prensrank');
-const googleTracker = require('./nightmare/googleTracker');
+const googleTracker = require('./nightmare/googleTracker2');
 
 var os = require("os");
 const platforms = {WINDOWS: 'WINDOWS',MAC: 'MAC',LINUX: 'LINUX',SUN: 'SUN',OPENBSD: 'OPENBSD',ANDROID: 'ANDROID',AIX: 'AIX',};

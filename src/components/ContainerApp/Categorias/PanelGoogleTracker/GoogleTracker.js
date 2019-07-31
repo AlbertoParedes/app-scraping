@@ -104,6 +104,8 @@ class GoogleTracker extends Component{
       }
 
     })
+
+
     console.log(keywords.length);
     this.setState({keywords})
 

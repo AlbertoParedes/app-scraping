@@ -37,8 +37,8 @@ module.exports = {
     .useragent('Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36')
 
     .updateStatus({id:0, text:'Abriendo <b>Google</b>', status:'running'})
-    .goto('https://www.google.es/webhp?num=100')
-    //.goto('https://www.google.es/')
+    //.goto('https://www.google.es/webhp?num=100')
+    .goto('https://www.google.es/')
     .updateStatus({id:0, text:'Abriendo <b>Google</b>', status:'ok'})
 
     //.wait(3000)
@@ -77,9 +77,7 @@ module.exports = {
               //.wait(`div#res[role="main"] > #search div[data-async-context="query:${kwdDecode}"]`)
               .wait(`div#res[role="main"] > #search div[data-async-context="query:${kwdDecode}"]`)
 
-              .catch(error =>{
-                console.log(error);
-              })
+              
 
               .evaluate( keyword => {
 
@@ -328,10 +326,3 @@ module.exports = {
   }
 }
 
-function getDominio(url){
-  var dominio = url;
-  dominio = dominio.startsWith("http://") ?  dominio.replace('http://','') : dominio;
-  dominio = dominio.startsWith("https://") ?  dominio.replace('https://','') : dominio;
-  dominio = dominio.startsWith("www.") ?  dominio.replace('www.','') : dominio;
-  return dominio
-}
