@@ -10,7 +10,7 @@ module.exports = {
   run: function(mainWindow, data) {
 
     var medios = {}
-    
+
     Nightmare.action('updateStatus', (text , done) => {mainWindow.send('RESPONSE_GOOGLE_TRACKER', text);done();});
     Nightmare.action('uploadResultado', (text , done) => {mainWindow.send('SUBIR_GOOGLE_TRACKER', text);done();});
 
@@ -35,7 +35,7 @@ module.exports = {
 
     nightmare
     .useragent('Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36')
-    
+
     .updateStatus({id:0, text:'Abriendo <b>Google</b>', status:'running'})
     .goto('https://www.google.es/webhp?num=100')
     //.goto('https://www.google.es/')
@@ -46,23 +46,23 @@ module.exports = {
     //analizamos los periodicon individuales
     .then(()=>{
       return new Promise(resolve=>{
-     
+
         var keywords = data.keywords
         const run = async () => {
 
           for (i = 0; i < keywords.length; ) {
-            
+
             await new Promise( resolve => {
               var keyword = keywords[i]
-              
+
               var kwdDecode = encodeURI(keyword.keyword)
-              
+
               nightmare
               //eliminamos la keyword a buscar anterior
               .updateStatus({id:2, text:'', status:''})
               //mostramos el cliente a analizar
               .updateStatus({id:1, text:'Cliente: <b>'+keyword.web+'</b>', status:'running'})
-              
+
               .insert('[name=q]','')
               //.wait(1 * 1000)
               .updateStatus({id:2, text:'Kewyword: <b>'+keyword.keyword+'</b>', status:'running'})
@@ -70,7 +70,7 @@ module.exports = {
               //.insert('[name="q"]', 'confeccion industrial')
               //.wait(1 * 1000)
               .type('[name="q"]', '\u000d')
-              
+
               //.wait(`div#res[role="main"] > #search div[data-async-context="query:${kwdDecode}"]`)
               .wait(`div#res[role="main"] > #search div[data-async-context="query:${kwdDecode}"]`)
 
@@ -99,14 +99,14 @@ module.exports = {
                     var html = element.innerHTML;
                     //agregamos la posicion a todos los resultados
                     html+= `<div style="position: absolute; font-size: 20px; top: 0px; left: -90px; height: 100%; width: 65px; text-align: center; display: flex; flex-direction: column; justify-content: center;" >${n}</div>`
-                    
+
                     var dominio = url;
                     dominio = dominio.startsWith("http://") ?  dominio.replace('http://','') : dominio;
                     dominio = dominio.startsWith("https://") ?  dominio.replace('https://','') : dominio;
                     dominio = dominio.startsWith("www.") ?  dominio.replace('www.','') : dominio;
-                    
-                  
-                    
+
+
+
                     //Buscamos que al menos uno de los dominios introducidos coincida con la url del resultado
                     var sameWeb = Object.entries(keyword.dominios).find(([k,d])=>{
                       var itemWeb = d;
@@ -114,13 +114,13 @@ module.exports = {
                       itemWeb = itemWeb.startsWith("https://") ?  itemWeb.replace('https://','') : itemWeb;
                       itemWeb = itemWeb.startsWith("www.") ?  itemWeb.replace('www.','') : itemWeb;
                       itemWeb = itemWeb.endsWith("/") ?  itemWeb.substring(0,itemWeb.length-1): itemWeb;
-            
+
                       return dominio.includes(itemWeb)
                     })
-  
+
                     if(sameWeb){
                       //coincidencia con la url de nuestro cliente
-                      html+='<div style="position: absolute; top: -10px; border: 4px solid #e64a89; width: calc(100% + 10px); height: calc(100% + 10px); left: -10px; border-radius: 13px;" ></div>'  
+                      html+='<div style="position: absolute; top: -10px; border: 4px solid #e64a89; width: calc(100% + 10px); height: calc(100% + 10px); left: -10px; border-radius: 13px;" ></div>'
                       resultadosCliente.push({
                         posicion: n,
                         url: url,
@@ -147,7 +147,7 @@ module.exports = {
                     }
                     element.innerHTML = html;
                   }
-              
+
                 })
 
                 //console.log('resultados', resultados);
@@ -173,7 +173,7 @@ module.exports = {
                 var altura = response.height < 8100 ? response.height : 8100;
                 altura = Math.ceil(altura)
                 console.log(altura);
-                
+
                 nightmare
                 .viewport(650,altura)
                 .wait(1500)
@@ -182,15 +182,15 @@ module.exports = {
                   console.log();
                   keyword.buf = buf;
 
-                  
+
                   nightmare
                   .uploadResultado(keyword)
-                  .then(()=>{ 
+                  .then(()=>{
                     i++;// ya podemos hacer la siguiente keyword
-                    resolve(); 
+                    resolve();
                   })
                   .catch(err=>{ console.log('Error 1 ->', err) })
-                  
+
 
 
                 })
@@ -251,35 +251,35 @@ module.exports = {
                                   resolve()
                               });
 
-                            }, 2 * 1000)
+                            }, 3 * 1000)
                           });
                         }
 
                         resolve()
                         console.log('Traza 100');
-                        
-      
+
+
                       }
                       internet();
-                      
-    
+
+
                     })
 
                   //})
-                  
+
                 })
                 .catch(err=>{
                   console.log('Error 3302:', err);
-                  
+
                 })
-                
-                
-                
 
 
 
 
-                
+
+
+
+
               })
 
             })
@@ -292,7 +292,7 @@ module.exports = {
 
         }
         run();
-        
+
       })
     })
     .then( data => {
