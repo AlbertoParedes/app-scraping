@@ -5,6 +5,7 @@ var nightmare = null;
 const path = require('path');
 var internetAvailable = require("internet-available");
 const request = require('request');
+const moment = require('moment')
 
 module.exports = {
   run: function(mainWindow, data) {
@@ -30,6 +31,8 @@ module.exports = {
       electronPath: require('../../node_modules/nightmare/node_modules/electron')//DEV
     }
 
+    console.log(moment());
+
     nightmare = Nightmare(options);
 
     nightmare
@@ -51,9 +54,10 @@ module.exports = {
 
             await new Promise( resolve => {
               var keyword = keywords[i];
-              //keyword.keyword = 'portl scaffolding'
-              console.log(i+1,keyword.keyword);
-              var kwdDecode = encodeURI(keyword.keyword)
+              //keyword.keyword = 'carnet c+e'
+
+              var kwdDecode = encodeURIComponent(keyword.keyword)
+              console.log(i+1,keyword.keyword, kwdDecode);
 
               nightmare
               //eliminamos la keyword a buscar anterior
@@ -330,6 +334,7 @@ module.exports = {
                 console.log('====================================');
                 console.log('Error gordo: ', err);
                 console.log('====================================');
+                resolve()
               })
 
             })
@@ -345,6 +350,7 @@ module.exports = {
 
     })
     .then( data => {
+      console.log(moment());
       console.log('Success');
       nightmare
       .end()
@@ -355,6 +361,7 @@ module.exports = {
 
     })
     .catch (err =>{
+      console.log(moment());
       console.log('Error 4 ->',err);
       nightmare
       .end()
