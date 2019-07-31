@@ -128,7 +128,7 @@ module.exports = {
                           try {
                             url = element.querySelector('.rc > .r a:not(.fl)').getAttribute('href');
                           } catch (error) {
-                            console.log('nourl',err);
+                            console.log('nourl',error);
                           }
 
                           if(url){
