@@ -24,7 +24,8 @@ class GoogleTracker extends Component{
       browser: true,
       estados:{},
       showTerminal:false,
-      clientes:{}
+      clientes:{},
+      num:0
     }
   }
 
@@ -44,7 +45,7 @@ class GoogleTracker extends Component{
 
   subirResultado = (event, data) => {
     console.log(data);
-
+   this.setState({num:this.state.num-1})
   }
 
   componentWillReceiveProps = newProps => {
@@ -61,8 +62,8 @@ class GoogleTracker extends Component{
 
   getData = () => {
 
-    db.child('Clientes').orderByKey().limitToFirst(1).on("value", snapshot =>{
-    //db.child('Clientes').orderByKey().once("value", snapshot =>{
+    //db.child('Clientes').orderByKey().limitToFirst(1).on("value", snapshot =>{
+    db.child('Clientes').orderByKey().once("value", snapshot =>{
       var clientes = {};
       snapshot.forEach( data => {
         var {eliminado,activo, web, id_cliente, servicios} = data.val();
@@ -107,7 +108,7 @@ class GoogleTracker extends Component{
 
 
     console.log(keywords.length);
-    this.setState({keywords})
+    this.setState({keywords, num:keywords.length})
 
 
   }
@@ -142,7 +143,8 @@ class GoogleTracker extends Component{
 
 
   render(){
-    var numDocuments = 0;
+    var numDocuments = this.state.num;
+    console.log(numDocuments);
     if(!this.state.visibility)return false
     return(
       <div className='home-app' >
@@ -170,7 +172,7 @@ class GoogleTracker extends Component{
           <div className='pr'>
             <h1>{this.props.app.titlePanel}</h1>
             <div className='container-tools-ahrefs'>
-              <p className='subtitle-container-principal'>{numDocuments} {numDocuments===1?'DOCUMENTO':'DOCUMENTOS'}</p>
+              <p className='subtitle-container-principal'>{numDocuments} {numDocuments===1?'KEYWORD':'KEYWORDS'}</p>
             </div>
             <div className='text-explicativo-container'>{this.props.app.desciption}</div>
           </div>

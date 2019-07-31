@@ -39,14 +39,14 @@ module.exports = {
     .goto(urlGoogle)
     .updateStatus({id:0, text:'Abriendo <b>Google</b>', status:'ok'})
     .then(()=>{
-      
-      
+
+
       return new Promise(resolve=>{
 
         var keywords = data.keywords
-        
+
         const run = async () => {
- 
+
           for (i = 0; i < keywords.length; ) {
 
             await new Promise( resolve => {
@@ -71,7 +71,7 @@ module.exports = {
               .evaluate( (keyword) => {
                 var badGrammar = document.querySelector('a.spell_orig')
                 console.log(badGrammar);
-                
+
                 if(badGrammar){
                   if(badGrammar.text===keyword.keyword){
                     return {error:'BAD_GRAMMAR',url:badGrammar.getAttribute('href')}
@@ -81,20 +81,22 @@ module.exports = {
               },keyword)
               .then((response)=>{
 
-                function handleErrors() { 
+                function handleErrors() {
                   return new Promise(resolve => {
 
                     if(response && response.error==='BAD_GRAMMAR'){
-                      /*console.log(response);
+
+                      console.log(response);
                       nightmare
                       .goto('http://google.es'+response.url)
                       .then(()=>{resolve(true)})
                       .catch(()=>{resolve(false)})
-                      */
+
+
                     }else if(!response){
                       resolve(true)
                     }
-                    
+
                   });
                 }
 
@@ -196,10 +198,10 @@ module.exports = {
                       //asignamos los resultados a la keyword
                       keyword.resultados = response.resultados.resultadosCliente.length>0?response.resultados.resultadosCliente:false
                       keyword.resultadosCompetidores = response.resultados.resultadosCompetidores.length>0?response.resultados.resultadosCompetidores:false
-      
+
                       var altura = response.height < 8100 ? response.height : 8100;
                       altura = Math.ceil(altura)
-      
+
                       nightmare
                       .viewport(650,altura)
                       .wait(1500)
@@ -207,7 +209,7 @@ module.exports = {
                         console.log('screenshot',buf);
                         console.log();
                         keyword.buf = buf;
-      
+
                         nightmare
                         .uploadResultado(keyword)
                         .then(()=>{
@@ -215,24 +217,28 @@ module.exports = {
                           resolve();
                         })
                         .catch(err=>{ console.log('Error 1 ->', err) })
-      
+
                       })
                       .then(()=>{   console.log('caca') })
                       .catch(err=>{ console.log('Error 2 ->',err) })
-      
-      
+
+
                     })
                     .catch(err=>{
 
                       //hay qure reiniciar router
-      
+
                       console.log('Error grave:', err);
                       console.log('');
-      
+
+                      if(err.toString().includes('[role="main"]')){
+                        console.log('Error en el body, no lo encuentra');
+                      }
+
                       nightmare
                       .end()
                       .then(()=>{
-      
+
                         request('https://maker.ifttt.com/trigger/reset/with/key/rdcFB2_ZLgJLiAf-pX8HGRQ6qVsxb8GKoL_eePspHT', (err, res, body) => {
 
                           const internet = async () => {
@@ -241,61 +247,75 @@ module.exports = {
                             while(!online) {
                               await new Promise( resolve => {
                                 setTimeout(() => {
-    
+
                                   internetAvailable()
                                   .then(()=>{
-                                    console.log("Internet available");
-                                    nightmare = new Nightmare(options);
                                     nightmare
-                                    .useragent('Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36')
-                                    .updateStatus({id:0, text:'Abriendo <b>Google</b>', status:'running'})
-                                    .goto(urlGoogle)
-                                    .updateStatus({id:0, text:'Abriendo <b>Google</b>', status:'ok'})
+                                    .end()
                                     .then(()=>{
-                                      console.log('Ya ha vuelto el internet');
-                                    })
-                                    .catch(()=>{
-                                        console.log("error 4402");
+                                      console.log("Internet available");
+                                      nightmare = new Nightmare(options);
+                                      nightmare
+                                      .useragent('Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36')
+                                      .updateStatus({id:0, text:'Abriendo <b>Google</b>', status:'running'})
+                                      .goto(urlGoogle)
+                                      .updateStatus({id:0, text:'Abriendo <b>Google</b>', status:'ok'})
+                                      .then(()=>{
+                                        console.log('Ya ha vuelto el internet');
+                                        online=true;
                                         resolve()
-                                    });
-  
-                                    online=true;
-                                    resolve()
-    
+                                      })
+                                      .catch((err)=>{
+                                          console.log("error 4402", err);
+                                          nightmare
+                                          .end()
+                                          .then(()=>{resolve()})
+                                          .catch(err=>{resolve()})
+                                      });
+
+
+                                      console.log("Ventana abierta otra vez");
+                                    })
+                                    .catch(err=>{
+                                      resolve()
+                                    })
+
+
+
                                   })
                                   .catch(()=>{
                                     console.log("No internet");
                                     resolve()
                                   });
-    
+
                                 }, 3 * 1000)
                               });
                             }
-    
+
                             resolve()
                             console.log('Traza 100');
-    
-    
+
+
                           }
                           internet();
-    
-    
+
+
                         })
-      
-                        
-      
+
+
+
                       })
                       .catch(err=>{
                         console.log('Error 3302:', err);
                       })
                     })
-                  }) 
-                  
+                  })
+
                 }
 
                 async function waitOK() {
                   var access = await handleErrors();
-                  
+
                   if(access){
                     await getData()
                   }
@@ -304,7 +324,7 @@ module.exports = {
 
                 }
                 waitOK();
-                
+
               })
               .catch(()=>{})
 
