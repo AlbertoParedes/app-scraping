@@ -52,6 +52,7 @@ module.exports = {
             await new Promise( resolve => {
               var keyword = keywords[i];
               //keyword.keyword = 'portl scaffolding'
+              console.log(i+1,keyword.keyword);
               var kwdDecode = encodeURI(keyword.keyword)
 
               nightmare
@@ -67,22 +68,29 @@ module.exports = {
               .type('[name="q"]', '\u000d')
 
               //evaluar si existe en  la pagina de google la correccion de gramatica para ir a la pagina correcta
-              .evaluate( () => {
+              .evaluate( (keyword) => {
                 var badGrammar = document.querySelector('a.spell_orig')
-                if(badGrammar){return {error:'BAD_GRAMMAR',url:badGrammar.getAttribute('href')}}
+                console.log(badGrammar);
+                
+                if(badGrammar){
+                  if(badGrammar.text===keyword.keyword){
+                    return {error:'BAD_GRAMMAR',url:badGrammar.getAttribute('href')}
+                  }
+                }
                 return false
-              })
+              },keyword)
               .then((response)=>{
 
                 function handleErrors() { 
                   return new Promise(resolve => {
 
                     if(response && response.error==='BAD_GRAMMAR'){
-                      console.log(response);
+                      /*console.log(response);
                       nightmare
                       .goto('http://google.es'+response.url)
                       .then(()=>{resolve(true)})
                       .catch(()=>{resolve(false)})
+                      */
                     }else if(!response){
                       resolve(true)
                     }
