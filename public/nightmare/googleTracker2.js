@@ -326,7 +326,11 @@ module.exports = {
                 waitOK();
 
               })
-              .catch(()=>{})
+              .catch((err)=>{
+                console.log('====================================');
+                console.log('Error gordo: ', err);
+                console.log('====================================');
+              })
 
             })
 
