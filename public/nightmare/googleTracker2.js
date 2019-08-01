@@ -280,7 +280,10 @@ module.exports = {
                                             console.log("error 4402", err);
                                             nightmare
                                             .end()
-                                            .then(()=>{resolve()})
+                                            .then(()=>{
+                                              console.log('okkk');
+                                              resolve()
+                                            })
                                             .catch(err=>{
                                               console.log('6800',err);
                                               resolve()
