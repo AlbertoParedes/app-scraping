@@ -1,12 +1,17 @@
 import React, {Component} from 'react'
 import { ReactComponent as Play } from '../../../Global/Images/play.svg';
+import { ReactComponent as Reset } from '../../../Global/Images/replay.svg';
 import { ReactComponent as Loop } from '../../../Global/Images/loop.svg';
 import { ReactComponent as Cross } from '../../../Global/Images/cross.svg';
 import { ReactComponent as Check } from '../../../Global/Images/check.svg';
 import ReactHtmlParser from 'react-html-parser';
+import ConfirmAlert from '../../../Global/ConfirmAlert'
 import firebase from '../../../../firebase/Firebase';
 import Switch from '../../../Global/Switch'
 import functions from '../../../../functions'
+import axios from 'axios';
+import moment from 'moment'
+
 const db = firebase.database().ref();
 const { ipcRenderer } = window.require('electron');
 
@@ -25,7 +30,9 @@ class GoogleTracker extends Component{
       estados:{},
       showTerminal:false,
       clientes:{},
-      num:0
+      num:0,
+      keywords:[],
+      reiniciar:false
     }
   }
 
@@ -43,9 +50,71 @@ class GoogleTracker extends Component{
     this.setState({estados})
   }
 
-  subirResultado = (event, data) => {
-    console.log(data);
-   this.setState({num:this.state.num-1})
+  subirResultado = (event, keyword) => {
+
+    var year = moment().format('YYYY');
+    var month = moment().format('MM');
+    var day = moment().format('DD');
+    var id_date = moment().format('YYYY-MM-DD')
+
+    day = '02'
+    id_date = '2019-08-02'
+
+    var file = new Blob( [keyword.buf], { type: "image/png" } );
+    file.lastModifiedDate = new Date();
+    file.name = `${day}.png`;
+
+    var data = new FormData();
+    data.append('path', `${keyword.id_cliente}/${keyword.id_keyword}/${year}/${month}`);
+    data.append("image", file, file.name);
+
+    const BASE_URL = 'https://seo.yoseomk.vps-100.netricahosting.com';
+    axios.post( `${BASE_URL}/files/upload-image-tracking`, data)
+    .then( res => {
+      if(res.status===200){
+
+        var imageUrl = `${BASE_URL}/${res.data.imageUrl}`
+        var multiPath = {}
+        var new_results = {
+          previous : keyword.results.new,
+          new:{
+            all_positions:keyword.resultados,
+            first_position:keyword.resultados?keyword.resultados[0].posicion:false,
+            first_url:keyword.resultados?keyword.resultados[0].url:false,
+            id_date:id_date,
+            image:imageUrl,
+            competidores: keyword.resultadosCompetidores,
+          }
+        }
+        multiPath[`Servicios/Tracking/Resultados/clientes/${keyword.id_cliente}/${keyword.id_keyword}/keyword`] = keyword.keyword;
+        multiPath[`Servicios/Tracking/Resultados/clientes/${keyword.id_cliente}/${keyword.id_keyword}/dates/${id_date}`]={
+          id_date:id_date,
+          image: imageUrl,
+          keyword:keyword.keyword,
+          timestamp : Date.now(),
+          results:{
+            all_positions:keyword.resultados,
+            first_position:keyword.resultados?keyword.resultados[0].posicion:false,
+            first_url:keyword.resultados?keyword.resultados[0].url:false,
+            competidores: keyword.resultadosCompetidores,
+          }
+
+        }
+
+        multiPath[`Clientes/${keyword.id_cliente}/servicios/tracking/keywords/${keyword.id_keyword}/done`]= true;
+        multiPath[`Clientes/${keyword.id_cliente}/servicios/tracking/keywords/${keyword.id_keyword}/results`]= new_results;
+        console.log(multiPath);
+        
+        db.update(multiPath)
+        .then(()=>console.log('Actualizado correctamente', keyword.id_cliente,  keyword.keyword ))
+        .catch(err => console.log(err))
+        
+
+      }
+      
+    })
+
+    this.setState({num:this.state.num-1})
   }
 
   componentWillReceiveProps = newProps => {
@@ -61,6 +130,7 @@ class GoogleTracker extends Component{
   }
 
   getData = () => {
+    var multipath = {}
 
     //db.child('Clientes').orderByKey().limitToFirst(1).on("value", snapshot =>{
     db.child('Clientes').orderByKey().once("value", snapshot =>{
@@ -69,11 +139,12 @@ class GoogleTracker extends Component{
         var {eliminado,activo, web, id_cliente, servicios} = data.val();
         try {
           if(!eliminado && activo && servicios.tracking.activo){
-            clientes[data.key]={web,eliminado,id_cliente, activo, tracking:servicios.tracking}
+            clientes[data.key]= data.val();
           }
         } catch (error) {}
 
       });
+      
       this.setState({clientes},()=>this.collectKeywords())
     })
 
@@ -86,30 +157,27 @@ class GoogleTracker extends Component{
 
     Object.entries(clientes).forEach(([i,c])=>{
 
-      if(c.tracking.keywords){
-        Object.entries(c.tracking.keywords).forEach(([j,k])=>{
+      if(c.servicios.tracking.keywords && c.servicios.tracking.dominios){
+        Object.entries(c.servicios.tracking.keywords).forEach(([j,k])=>{
 
-          if(k.activo && !k.eliminado /* && k.done */){
-            var dominio = functions.getDominio(c.web)
-            keywords.push({
-              keyword:k.keyword,
-              web: c.web,
-              id_cliente:c.id_cliente,
-              id_keyword:k.id_keyword,
-              dominios: {"dominio0":dominio, "dominio1":"academia.com/"},
-              competidores:{"competidor1": "corteyconfeccioncarmen.es", "competidor2":"educaweb.com"}
-            })
+          if(k.activo && !k.eliminado && !k.done ){
+
+            var kwd = k
+            kwd.id_cliente = c.id_cliente
+            kwd.web = c.web
+            kwd.dominios = c.servicios.tracking.dominios
+            kwd.competidores = c.servicios.tracking.competidores?c.servicios.tracking.competidores:false
+            keywords.push(kwd)
+
           }
 
         })
       }
 
     })
-
-
-    console.log(keywords.length);
+    console.log(keywords);
+    
     this.setState({keywords, num:keywords.length})
-
 
   }
 
@@ -139,6 +207,41 @@ class GoogleTracker extends Component{
         this.setState({browser:json.valor})
       }
     }
+  }
+
+  clearKeywordsDone = () => {
+
+
+    var multiPath = {}
+    Object.entries(this.state.clientes).forEach( ([k,c]) => {
+      //con esto solo activamos el cliente deseado
+      //if(c.id_cliente!=="-LJEGvPbJdRTHycJKMsX")return null
+      if(!c.servicios.tracking || c.eliminado || !c.servicios.tracking.activo || !c.servicios.tracking.keywords)return false;
+      Object.entries(c.servicios.tracking.keywords).forEach( ([k2, w]) =>{
+        if(!w.activo || w.eliminado) return false;
+        multiPath[`Clientes/${c.id_cliente}/servicios/tracking/keywords/${w.id_keyword}/done`]=false
+      })
+
+    })
+    console.log(multiPath);
+    db.update(multiPath)
+    .then(()=>{
+      console.log('Actualizado correctamente');
+      this.setState({reiniciar:false})
+    })
+    .catch(err=>{console.log(err);
+    })
+
+  }
+
+  confirmResult = (result) => {
+    if(result==='cancelar'){
+      this.setState({reiniciar:false})
+    }if(result==='aceptar'){
+      this.clearKeywordsDone()
+      
+    }
+
   }
 
 
@@ -176,28 +279,44 @@ class GoogleTracker extends Component{
             </div>
             <div className='text-explicativo-container'>{this.props.app.desciption}</div>
           </div>
-          <div className='container-buttons-panel'>
-            <div onClick={()=>this.handleScript()} className={`button-upload btn-prensarank ${this.state.statusScript==='running'?'running-prensarank':''}`}>
+          {
+            this.state.keywords.length>0?
+            <div className='container-buttons-panel'>
+              <div onClick={()=>this.handleScript()} className={`button-upload btn-prensarank ${this.state.statusScript==='running'?'running-prensarank':''}`}>
 
-              {this.state.statusScript==='run'?
+                {this.state.statusScript==='run'?
+                  <div className='displa_flex'>
+                    <Play className='play-prensarank' />
+                    <div className='text-btn-prensarank'>Ejecutar script</div>
+                  </div>:null
+                }
+
+                {this.state.statusScript==='running'?
+                  <div className='displa_flex'>
+                    <Loop className='loop-prensarank' />
+                    <div className='text-btn-prensarank'>Ejecutando script</div>
+
+                    <Cross className='cancel-prensarank' />
+                    <div className='text-btn-prensarank text-cancel-prensarank'>Cancelar script</div>
+                  </div>:null
+                }
+
+              </div>
+              
+              <div onClick={()=>this.setState({reiniciar:true})} className={`button-upload btn-prensarank btn-reiniciar-kwds`}>
                 <div className='displa_flex'>
-                  <Play className='play-prensarank' />
-                  <div className='text-btn-prensarank'>Ejecutar script</div>
-                </div>:null
-              }
+                  <Reset className='reset-keywords' />
+                  <div className='text-btn-prensarank'>Reiniciar</div>
+                </div>
 
-              {this.state.statusScript==='running'?
-                <div className='displa_flex'>
-                  <Loop className='loop-prensarank' />
-                  <div className='text-btn-prensarank'>Ejecutando script</div>
+              </div>
 
-                  <Cross className='cancel-prensarank' />
-                  <div className='text-btn-prensarank text-cancel-prensarank'>Cancelar script</div>
-                </div>:null
-              }
+
 
             </div>
-          </div>
+            :null
+          }
+          
 
 
           <div className='switch-container-browser'>
@@ -206,6 +325,16 @@ class GoogleTracker extends Component{
           </div>
 
         </div>
+
+
+        {this.state.reiniciar ?
+          <ConfirmAlert
+            text={'¿Estás seguro que deseas <b>reiniciar</b> las keywords?'}
+            cancelar={'Cancelar'}
+            aceptar={'Aceptar'}
+            confirmResult={(result) => this.confirmResult(result)}
+          />:null
+        }
 
 
       </div>

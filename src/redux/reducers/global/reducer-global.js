@@ -31,7 +31,9 @@ var global = {
       desciption:'Script que se encaga de trackear las posiciones de todas las keywords guardando ademas una captura como prueba.',
       miniCard:{
         title:'Trackea keywords de clientes',
-        bottomTitle:'GOOGLE'
+        bottomTitle:'GOOGLE',
+        logo: require('../../../components/Global/Images/logos/google-logo.png'),
+        classLogo:'logo-google'
       },      
     },
     
