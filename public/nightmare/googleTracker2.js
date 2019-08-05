@@ -20,7 +20,7 @@ module.exports = {
       //waitTimeout: 2 * 60 * 1000,
 
       executionTimeout: 2 * 1000,
-      waitTimeout: 2 * 1000,
+      waitTimeout: 4 * 1000,
 
       show: data.browser,
       height: 800,
@@ -58,7 +58,7 @@ module.exports = {
 
               var kwdDecode = encodeURIComponent(keyword.keyword)
               console.log(i+1,keyword.keyword, kwdDecode);
-              
+
               console.log('Traza 1');
               nightmare
               //eliminamos la keyword a buscar anterior
@@ -90,7 +90,7 @@ module.exports = {
                   }
                 }
                 if(Object.keys(data).length>0){
-                 
+
                   return data
                 }
                 return false
@@ -98,7 +98,7 @@ module.exports = {
               },keyword)
               .then((response)=>{
                 console.log('traza x');
-                
+
                 function handleErrors() {
                   return new Promise(resolve => {
                     console.log(response);
@@ -111,7 +111,7 @@ module.exports = {
                         resolve(false)
                       })
                     }
-                      
+
                     resolve(true)
 
                   });
@@ -167,7 +167,7 @@ module.exports = {
                               itemWeb = itemWeb.startsWith("https://") ?  itemWeb.replace('https://','') : itemWeb;
                               itemWeb = itemWeb.startsWith("www.") ?  itemWeb.replace('www.','') : itemWeb;
                               itemWeb = itemWeb.endsWith("/") ?  itemWeb.substring(0,itemWeb.length-1): itemWeb;
-  
+
                               return dominio.includes(itemWeb)
                             }
                             return false
@@ -349,7 +349,7 @@ module.exports = {
                 }
                 async function waitOK() {
                   var access = await handleErrors();
-                  
+
                   if(access){
                     await getData()
                   }

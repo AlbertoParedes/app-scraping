@@ -280,7 +280,7 @@ class GoogleTracker extends Component{
             <div className='text-explicativo-container'>{this.props.app.desciption}</div>
           </div>
           {
-            this.state.keywords.length>0?
+            this.state.keywords.length>=0?
             <div className='container-buttons-panel'>
               <div onClick={()=>this.handleScript()} className={`button-upload btn-prensarank ${this.state.statusScript==='running'?'running-prensarank':''}`}>
 

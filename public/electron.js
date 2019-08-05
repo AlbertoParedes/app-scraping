@@ -5,6 +5,7 @@ const ahrefs = require('./conectores_python/ahrefs');
 const word2html = require('./conectores_python/word2html');
 const prensrank = require('./nightmare/prensrank');
 const googleTracker = require('./nightmare/googleTracker2');
+const puppeteer = require('./nightmare/puppeteer');
 
 var os = require("os");
 const platforms = {WINDOWS: 'WINDOWS',MAC: 'MAC',LINUX: 'LINUX',SUN: 'SUN',OPENBSD: 'OPENBSD',ANDROID: 'ANDROID',AIX: 'AIX',};
@@ -100,6 +101,7 @@ ipcMain.on('STOP_PRENSARANK', (event) => {
 //Nightmare GOOGLE TRACKER --------------------------------------------------------------------------
 ipcMain.on('START_GOOGLE_TRACKER', (event, data) => {
   googleTracker.run(mainWindow,data);
+  //puppeteer.run(mainWindow,data);
 })
 ipcMain.on('STOP_GOOGLE_TRACKER', (event) => {
   googleTracker.stop();
