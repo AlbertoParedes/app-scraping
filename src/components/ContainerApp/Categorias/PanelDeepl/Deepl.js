@@ -5,6 +5,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { ReactComponent as Loop } from '../../../Global/Images/loop.svg';
 import { ReactComponent as Cross } from '../../../Global/Images/cross.svg';
 import { ReactComponent as Check } from '../../../Global/Images/check.svg';
+import { ReactComponent as Server } from '../../../Global/Images/server.svg';
 import Card from './Card'
 import Switch from '../../../Global/Switch'
 import { connect } from 'react-redux';
@@ -24,6 +25,7 @@ class Deepl extends Component {
       estados:{},
       browser: false,
       statusScript:'run',
+      refreshBD: true,
       styleImage:{
         background:`linear-gradient(95.65deg, rgb(22, 26, 57) 13.2%, rgba(22, 26, 57, 0.9) 55.88%, rgba(39, 39, 72, 0.35) 97.88%) center center / cover, url(${this.props.app.image}) no-repeat`,
         backgroundPosition: "center center",
@@ -61,7 +63,7 @@ class Deepl extends Component {
   }
   getData = (event, data) => {
     console.log('kkll',data);
-    this.setState({documents: data})
+    this.setState({documents: data, refreshBD:true})
   }
   requestData = () => {
     ipcRenderer.send('REQUEST_DATA_TRADUCCIONES',{});
@@ -111,6 +113,14 @@ class Deepl extends Component {
         this.setState({browser:json.valor})
       }
     }
+  }
+
+  refreshDataBase = () => {
+    this.setState({
+      refreshBD:false
+    }, ()=>{
+      this.requestData()
+    })
   }
 
   render(){
@@ -165,6 +175,13 @@ class Deepl extends Component {
             <Switch class_div={'switch_browser'} callbackSwitch={this.callbackSwitch} json={{id:'browser'}} valor={this.state.browser}/>
             <div className='text-switch-prensarank'>browser</div>
           </div>
+          {this.state.refreshBD?
+            <div className='server-container-deepl' onClick={()=>{this.refreshDataBase()}}>
+              <Server className='' />
+            </div> 
+          :null
+          }
+                   
 
         </div>
 

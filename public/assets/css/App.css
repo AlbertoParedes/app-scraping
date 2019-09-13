@@ -947,6 +947,19 @@ div.heading_2>span{
   transition: all 2s;
 }
 
+.server-container-deepl{
+  z-index: 8;
+  /* width: 100px; */
+  height: 31px;
+  position: absolute;
+  right: 10px;
+  bottom: 1px;
+  cursor: pointer;
+}
+
+.server-container-deepl > svg > path{
+  fill: white;
+}
 
 
 

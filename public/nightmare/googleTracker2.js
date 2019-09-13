@@ -27,8 +27,8 @@ module.exports = {
       width: 650,
       enableLargerThanScreen: true,
       //electronPath: require('../../../electron')//DEPLOY WINDOWS, si creamos la aplicacion con electron-builder esto no hace falta
-      //electronPath: require(`${path.join(__dirname, '../../../app.asar.unpacked/node_modules/nightmare/node_modules/electron')}`)//DEPLOY MAC AND WINDOWS
-      electronPath: require('../../node_modules/nightmare/node_modules/electron')//DEV
+      electronPath: require(`${path.join(__dirname, '../../../app.asar.unpacked/node_modules/nightmare/node_modules/electron')}`)//DEPLOY MAC AND WINDOWS
+      //electronPath: require('../../node_modules/nightmare/node_modules/electron')//DEV
     }
 
     console.log(moment());

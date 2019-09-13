@@ -3,10 +3,10 @@
 const db = require('../sql/database')
 var internetAvailable = require("internet-available");
 const request = require('request');
-const puppeteer = require('puppeteer');
+const puppeteer = require("puppeteer");
 var browser = null
 var stopRunning = false;
-var reinicioRouter = true
+var reinicioRouter = false
 
 var settings = {
   timeout: 3000000
@@ -25,12 +25,19 @@ module.exports = {
     
 
     var {documento} = data
+
+    var puppeteerSettings = {
+      headless: data.browser?false:true,
+      executablePath: puppeteer.executablePath().replace('app.asar', 'app.asar.unpacked')// ESTO SIRVE SOLO PARA EL DOPLOY EN WINDOWS Y MAC. Comentar esta linea en desarrollo
+    }
   
 
     const run = async () => {
       stopRunning = false;
       this.setEstado(mainWindow, {id:0, text:'Abriendo navegador', status:'running'})
-      browser = await puppeteer.launch({headless: data.browser?false:true});
+      browser = await puppeteer.launch(puppeteerSettings);
+      console.log('kknn,',puppeteer.executablePath());
+      
       var page = await browser.newPage();
       this.setEstado(mainWindow, {id:0, text:'Abriendo navegador', status:'ok'})
       this.setEstado(mainWindow, {id:1, text:'0 de '+Object.keys(documento.urls).length+' urls', status:'running'})
@@ -158,7 +165,7 @@ module.exports = {
                                 setTimeout(() => {
                                   internetAvailable()
                                   .then(async ()=>{
-                                    browser = await puppeteer.launch({headless: data.browser?false:true});
+                                    browser = await puppeteer.launch(puppeteerSettings);
                                     page = await browser.newPage();
                                     console.log('Se ha reiniciado el router');
                                     online=true;
@@ -180,7 +187,7 @@ module.exports = {
 
                 }else{
                   await new Promise(resolve => setTimeout(resolve, 7*1000));
-                  browser = await puppeteer.launch({headless: data.browser?false:true});;
+                  browser = await puppeteer.launch(puppeteerSettings);;
                   page = await browser.newPage();
                 }
 

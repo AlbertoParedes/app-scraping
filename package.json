@@ -28,6 +28,8 @@
     "office-document-properties": "^1.0.8",
     "path": "^0.12.7",
     "puppeteer": "^1.19.0",
+    "puppeteer-core": "^1.20.0",
+    "puppeteer-electron": "^0.0.5",
     "python-shell": "^1.0.7",
     "react": "^16.6.1",
     "react-contenteditable": "^3.2.2",
@@ -68,6 +70,8 @@
   },
   "build": {
     "appId": "com.yoseo-scripts",
+    "asar": true,
+    "asarUnpack": "node_modules/puppeteer/.local-chromium/**/*",
     "files": [
       "build/**/*",
       "node_modules/**/*"
