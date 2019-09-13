@@ -101,7 +101,7 @@ module.exports = {
               this.setEstado(mainWindow, {id:3, text:`Traduciendo ${pos} de ${arrayParrafos.length} bloque(s)`, status:'running'})
 
               try {
-                await page.waitForFunction(`document.querySelector('[dl-test="translator-target"] textarea2').value.trim().length>0`)
+                await page.waitForFunction(`document.querySelector('[dl-test="translator-target"] textarea').value.trim().length>0`)
                 const traduccion = await page.evaluate(() => {
                   const traduccion = document.querySelector('[dl-test="translator-target"] textarea').value.trim();
                   document.querySelector('[dl-test="translator-target"] textarea').value = ''
