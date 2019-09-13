@@ -4,8 +4,10 @@ import { connect } from 'react-redux';
 
 import AhrefsKeywordPanel from "./Categorias/PanelAhrefsKeywords/AhrefsKeywords";
 import Word2Html from "./Categorias/PanelWord2Html/Word2Html";
+import PalabrasWord from "./Categorias/PanelPalabrasWord/PalabrasWord";
 import Presarank from "./Categorias/PanelPresarank/Presarank";
 import GoogleTracker from "./Categorias/PanelGoogleTracker/GoogleTracker";
+import Deepl from './Categorias/PanelDeepl/Deepl'
 
 class ContainerApp extends Component {
   constructor(props) {
@@ -39,6 +41,16 @@ class ContainerApp extends Component {
         <GoogleTracker 
           visibility={this.props.panelSeleccionado.categoria === 2 && this.props.panelSeleccionado.idPanel==='tracking_keywords'?true:false} 
           app={this.props.apps['tracking_keywords']} 
+        />
+
+        <PalabrasWord 
+          visibility={this.props.panelSeleccionado.categoria === 2 && this.props.panelSeleccionado.idPanel==='wordsDocx'?true:false} 
+          app={this.props.apps['wordsDocx']} 
+        />
+
+        <Deepl 
+          visibility={this.props.panelSeleccionado.categoria === 2 && this.props.panelSeleccionado.idPanel==='deepl'?true:false} 
+          app={this.props.apps['deepl']} 
         />
 
       </div>

@@ -3,6 +3,7 @@ var global = {
 
   os:null,
   documentScrapingOpera: false,
+  documentScrapingDeepl:false,
 
   menu:{
     item_1:{
@@ -37,6 +38,21 @@ var global = {
       },      
     },
     
+    wordsDocx: {
+      id: 'wordsDocx',
+      categoria: 2,
+      textMenu: 'Words counter',
+      titlePanel: 'Total de palabras por Word',
+      desciption:'Script que se encarga de contar las palabras de los archivos .docx por meses y por empleado',
+      image: require('../../../components/Global/Images/bg-1-2.gif'),
+      miniCard:{
+        title:'Cuenta las palabras de los Words',
+        bottomTitle:'Microsoft word',
+        image: require('../../../components/Global/Images/wallpapers/Blur05.png'),
+        logo: require('../../../components/Global/Images/logos/word-logo.png'),
+        classLogo:'logo-word'
+      },
+    },
 
    prensarank: {
       id: 'prensarank',
@@ -51,6 +67,24 @@ var global = {
         image: require('../../../components/Global/Images/wallpapers/Blur03.png'),
         logo: require('../../../components/Global/Images/logos/prensarank-logo.png'),
         classLogo:'logo-presarank'
+      },
+    },
+
+    
+
+    word2html: {
+      id: 'word2html',
+      categoria: 2,
+      textMenu: 'Word → html',
+      titlePanel: 'Documentos Word a html',
+      desciption:'Script que se encarga de convertir documentos Word a HTML según una ruta o archivos seleccionados',
+      image: require('../../../components/Global/Images/bg-1-2.gif'),
+      miniCard:{
+        title:'Convierte ficheros words a html',
+        bottomTitle:'Microsoft word',
+        image: require('../../../components/Global/Images/wallpapers/Blur05.png'),
+        logo: require('../../../components/Global/Images/logos/word-logo.png'),
+        classLogo:'logo-word'
       },
     },
 
@@ -71,21 +105,24 @@ var global = {
       },      
     },
 
-    word2html: {
-      id: 'word2html',
+    deepl: {
+      id: 'deepl',
       categoria: 2,
-      textMenu: 'Word → html',
-      titlePanel: 'Documentos Word a html',
-      desciption:'Script que se encarga de convertir documentos Word a HTML según una ruta o archivos seleccionados',
+      textMenu: 'DeepL',
+      menuButton: false,
+      titlePanel: 'Traductor </br>de textos',
       image: require('../../../components/Global/Images/bg-1-2.gif'),
+      desciption:'Script que se encaga de traducir textos en deepl.com agrupandolos como máximo en 5000 caracteres',
       miniCard:{
-        title:'Convierte ficheros words a html',
-        bottomTitle:'Microsoft word',
-        image: require('../../../components/Global/Images/wallpapers/Blur05.png'),
-        logo: require('../../../components/Global/Images/logos/word-logo.png'),
-        classLogo:'logo-word'
-      },
+        title:'Traduce textos',
+        bottomTitle:'DEEPL',
+        image: require('../../../components/Global/Images/wallpapers/Blur04.png'),
+        logo: require('../../../components/Global/Images/logos/deepl-logo.png'),
+        classLogo:'logo-deepl'
+      },      
     },
+
+    
 
 
   },
@@ -110,6 +147,9 @@ export default function (state = global, action) {
 
     case "CHANGE_RUN_SCRAPING_OPERA":
       return dotProp.set(state, `documentScrapingOpera`, action.documentScrapingOpera);
+
+    case "CHANGE_RUN_SCRAPING_DEEPL":
+      return dotProp.set(state, `documentScrapingDeepl`, action.documentScrapingDeepl);
 
     case "CHANGE_PANEL":
       return dotProp.set(state, `panelActivo`, action.panelActivo);

@@ -9,6 +9,10 @@ export const setScrapingOpera = (documentScrapingOpera) => {
   return { type: "CHANGE_RUN_SCRAPING_OPERA", documentScrapingOpera }
 }
 
+export const setScrapingDeepl = (documentScrapingDeepl) => {
+  return { type: "CHANGE_RUN_SCRAPING_DEEPL", documentScrapingDeepl }
+}
+
 export const setPanel = (panelActivo) => {
   return { type: "CHANGE_PANEL", panelActivo }
 }

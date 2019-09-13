@@ -340,3 +340,56 @@ body {
     -webkit-app-region: drag;
     height: 100%;
 }
+
+.item-word-empleado{
+  display: flex;
+}
+.item-word-empleado > div {
+  padding: 0px 10px;
+  display: flex;
+  align-items: center;
+  color: #61687b;
+  font-weight: 600;
+}
+
+.item-word-arrow{
+  width: 75px;
+    justify-content: center;
+    padding-left: 25px!important;
+}
+.item-word-name{
+  width: 95%;
+  text-align: left;
+  background: linear-gradient(104.74deg, rgb(32, 82, 132) 0%, rgb(32, 82, 132) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 19px;
+  font-weight: 600;
+  width: 100%;
+}
+.item-word-palabras{
+  width: 30%;
+  justify-content: flex-end;
+}
+.item-word-docum{
+  width: 30%;
+  justify-content: flex-end;
+}
+.header-table-counter-word{
+  border: none!important;
+  box-shadow: none!important;
+  margin-bottom: 0px!important;
+  text-transform: uppercase;
+  
+}
+.header-table-counter-word div {
+  font-size: 13px;
+  color: #96b1d0;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.header-table-counter-word > div > div{
+  -webkit-text-fill-color: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+}

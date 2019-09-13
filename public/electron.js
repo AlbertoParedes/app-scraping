@@ -5,7 +5,8 @@ const ahrefs = require('./conectores_python/ahrefs');
 const word2html = require('./conectores_python/word2html');
 const prensrank = require('./nightmare/prensrank');
 const googleTracker = require('./nightmare/googleTracker2');
-const puppeteer = require('./nightmare/puppeteer');
+const wordInfo = require('./js/wordInfo');
+const deepl = require('./nightmare/deepl');
 
 var os = require("os");
 const platforms = {WINDOWS: 'WINDOWS',MAC: 'MAC',LINUX: 'LINUX',SUN: 'SUN',OPENBSD: 'OPENBSD',ANDROID: 'ANDROID',AIX: 'AIX',};
@@ -107,6 +108,32 @@ ipcMain.on('STOP_GOOGLE_TRACKER', (event) => {
   googleTracker.stop();
 })
 //------------------------------------------------------------------------------------------------------------
+
+
+//CUENTA LAS PALABRAS DE LOS WORDS --------------------------------------------------------------------------
+ipcMain.on('GET_INFO_WORDS', (event, path) => {
+  wordInfo.run(mainWindow,path);
+  //puppeteer.run(mainWindow,data);
+})
+//------------------------------------------------------------------------------------------------------------
+
+//
+ipcMain.on('START_SCRAPING_DEEPL', (event, data) => {
+  deepl.run(mainWindow,data);
+})
+ipcMain.on('STOP_SCRAPING_DEEPL', (event) => {
+  deepl.stop(mainWindow);
+})
+ipcMain.on('SAVE_DOCUMENT_DEEPL', (event, data) => {
+  deepl.saveData(mainWindow,data)
+})
+ipcMain.on('REQUEST_DATA_TRADUCCIONES', (event, data) => {
+  deepl.getData(mainWindow)
+})
+ipcMain.on('DETELE_DATA_TRADUCCIONES', (event, id) => {
+  deepl.deleteData(mainWindow,id)
+})
+
 
 
 

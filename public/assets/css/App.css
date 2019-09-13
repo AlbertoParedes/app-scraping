@@ -459,7 +459,7 @@ div.heading_2>span{
   visibility: hidden;
 }
 .item-stop-ahrefs>path{
-  fill: #ffaa0f;
+  fill: #ff0f0f;
 }
 .status-run-ahrefs-card{
   position: relative;
@@ -471,6 +471,10 @@ div.heading_2>span{
 }
 .status-run-ahrefs-card:hover > .item-stop-ahrefs{
   visibility: visible;
+}
+
+.status-run-deepl:hover > .item-running-ahref{
+  visibility: hidden;
 }
 
 
@@ -665,6 +669,10 @@ div.heading_2>span{
 }
 .logo-google{
   width: 80px;
+  margin-top: 25px;
+}
+.logo-deepl{
+  width: 70px;
   margin-top: 25px;
 }
 .image-container-home{
