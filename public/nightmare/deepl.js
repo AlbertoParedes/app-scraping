@@ -6,7 +6,7 @@ const request = require('request');
 const puppeteer = require('puppeteer');
 var browser = null
 var stopRunning = false;
-var reinicioRouter = false
+var reinicioRouter = true
 
 var settings = {
   timeout: 3000000
