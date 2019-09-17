@@ -244,6 +244,65 @@ class GoogleTracker extends Component{
 
   }
 
+  doneEverithing = () => {
+    var multiPath = {}
+    Object.entries(this.state.clientes).forEach(([k,e])=>{
+      console.log(k,e);
+      if(!e.servicios.tracking.keywords)return null
+      Object.entries(e.servicios.tracking.keywords).forEach(([i, o])=>{
+        multiPath[`Clientes/${k}/servicios/tracking/keywords/${i}/done`] = true 
+      })
+    })
+    console.log(multiPath);
+    //db.update(multiPath)
+  }
+
+  deleteLast = async () =>{
+    var id = '-LXre2IXHLvtaDpZLrHk';
+    var id_date = '2019-09-13'
+    if(!this.state.clientes[id].servicios.tracking.keywords){
+      return null
+    }
+
+
+    var multiPath = {}
+    Object.entries(this.state.clientes[id].servicios.tracking.keywords).forEach(([k,e])=>{
+      var previous = e.results.previous
+      multiPath[`Clientes/${id}/servicios/tracking/keywords/${k}/results/new`] = previous
+      multiPath[`Clientes/${id}/servicios/tracking/keywords/${k}/results/previous`] = {
+        all_positions:false,
+        competidores:false,
+        first_position:false,
+        first_url:false,
+        id_date,
+        image:'x',
+      }
+    })
+
+
+
+    await db.child(`Servicios/Tracking/Resultados/clientes/${id}`).orderByKey().once("value", snapshot =>{
+      snapshot.forEach( data => {
+        var {dates} = data.val();
+        if(dates[id_date]){
+          multiPath[`Servicios/Tracking/Resultados/clientes/${id}/${data.key}/dates/${id_date}`]=null
+        }
+      });
+    })
+
+    console.log(multiPath);
+    //db.update(multiPath)
+  }
+
+  doneCliente = () => {
+    var id = '-LXre2IXHLvtaDpZLrHk'
+    var multiPath = {}
+    Object.entries(this.state.clientes[id].servicios.tracking.keywords).forEach(([k,e])=>{
+      multiPath[`Clientes/${id}/servicios/tracking/keywords/${k}/done`] = false 
+    })
+    console.log(multiPath);
+    //db.update(multiPath)
+  }
 
   render(){
     var numDocuments = this.state.num;
@@ -251,6 +310,15 @@ class GoogleTracker extends Component{
     if(!this.state.visibility)return false
     return(
       <div className='home-app' >
+
+        <div>
+          <button onClick={()=>this.doneEverithing()}>Terminar todo</button>
+          <button onClick={()=>this.deleteLast()}>Eliminar Ultimo</button>
+          <button onClick={()=>this.doneCliente()}>Reiniciar Keywords</button>
+        </div>
+
+
+
         {/*TERMINAL*/}
         <div className={` ${this.state.showTerminal?'show-terminal':'hidde-terminal'}`}>
           <div className={`container-terminal`}>

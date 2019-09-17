@@ -40,7 +40,7 @@ class ContainerApp extends Component {
 
         {/*Cambiar el false de la categoria por un 2 */}
         <GoogleTracker 
-          visibility={this.props.panelSeleccionado.categoria === false && this.props.panelSeleccionado.idPanel==='tracking_keywords'?true:false} 
+          visibility={this.props.panelSeleccionado.categoria === 2 && this.props.panelSeleccionado.idPanel==='tracking_keywords'?true:false} 
           app={this.props.apps['tracking_keywords']} 
         />
 
