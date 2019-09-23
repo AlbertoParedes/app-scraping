@@ -21,9 +21,6 @@ function getDominio(dominio) {
     dominio = dominio + '/' + idioma;
   }
 
-  //con esto quitamos hasta el el .com, .es ...
-  //dominio = dominio.includes(".") ?  dominio.substring(0, dominio.indexOf('.')) : dominio;
-
   return dominio.trim().toLowerCase();
 }
 
