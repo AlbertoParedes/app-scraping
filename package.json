@@ -21,7 +21,7 @@
     "jquery": "^3.4.1",
     "js2excel": "^1.0.1",
     "mammoth": "^1.4.8",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "moment-with-locales-es6": "^1.0.1",
     "mysql": "^2.17.1",
     "nightmare": "^3.0.2",
