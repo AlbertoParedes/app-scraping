@@ -20,7 +20,7 @@
     "internet-available": "^1.0.0",
     "jquery": "^3.4.1",
     "js2excel": "^1.0.1",
-    "mammoth": "^1.4.8",
+    "mammoth": "^1.5.1",
     "moment": "^2.24.0",
     "moment-with-locales-es6": "^1.0.1",
     "mysql": "^2.17.1",
